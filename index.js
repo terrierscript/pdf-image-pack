@@ -4,10 +4,24 @@ var PDFDocument = require('pdfkit')
 var defaults = require("defaults")
 module.exports = function(images, opts){
   var opt = defaults(opts, {
-    layout : "portlait",
-    //size   : 'letter'
-    size   : [200, 200]
+    //layout : "portlait",
+    fit    : false,
   })
+  var maxWidth = 0
+  var maxHeight = 0
+
+  var imgSizes = images.map(function(img){
+    var size = sizeOf(img)
+    maxWidth = Math.max(maxWidth, size.width)
+    maxHeight = Math.max(maxHeight, size.height)
+    return size
+  })
+
+  // auto scaling
+  if(!opt.size){
+    opt.size = [maxWidth, maxHeight]
+  }
+
   var output = "./tmp/out.pdf"
   var doc = new PDFDocument(opt)
 
@@ -16,9 +30,6 @@ module.exports = function(images, opts){
     height: doc.page.height
   }
 
-  var imgSizes = images.map(function(img){
-    return sizeOf(img)
-  })
 
   //console.log(pageSize)
 
@@ -27,18 +38,33 @@ module.exports = function(images, opts){
       doc.addPage()
     }
     var imgSize = imgSizes[i]
-    doc.image(img, 0, 0)
+    var newSize = calcSize(pageSize, imgSize, opt.fit)
+    var offset = calcOffset(pageSize, newSize)
+    doc.image(img, offset.x, offset.y, newSize)
   })
 
   doc.pipe(fs.createWriteStream(output))
   doc.end()
 }
 
+var addImage = function(doc, image){}
+
+// calcurate size
 var calcSize = function(pageSize, imageSize, fit){
-  if(!fit && isLargeSize(parSize, imageSize)){
+  if(!fit && isLargeSize(pageSize, imageSize)){
     return imageSize
   }
-
+  if(imageSize.width > imageSize.height){
+    return {
+      width : pageSize.width,
+      height : (pageSize.width / imageSize.width) * imageSize.height
+    }
+  }else{
+    return {
+      width : (pageSize.height / imageSize.height) * imageSize.width,
+      height : pageSize.height
+    }
+  }
 }
 
 // return true if a > b
@@ -46,15 +72,10 @@ var isLargeSize = function(a, b){
   return (a.width > b.width && a.height > b.height)
 }
 
-// calc image rate with longe
-var calcSizeRate = function(size){
-  if(isLandscape(size)){
-    return size.width / size.height
-  }else{
-    return size.height / size.width
-  }
-}
 
-var isLandscape = function(size){
-  return size.height > size.width
+var calcOffset = function(pageSize, imageSize){
+  return {
+    x : (pageSize.width - imageSize.width) / 2,
+    y : (pageSize.height - imageSize.height) / 2
+  }
 }
