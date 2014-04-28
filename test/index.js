@@ -1,4 +1,5 @@
 var pdfPack = require("../index")
+var assert = require("assert")
 describe("pack",function(){
   it("pack", function(done){
     var imgs = [
@@ -6,7 +7,8 @@ describe("pack",function(){
       "./fixture/basic/b.png",
     ]
     var output = "./tmp/out.pdf"
-    pdfPack(imgs, output, {}, function(){
+    pdfPack(imgs, output, {}, function(err, doc){
+      assert.equal(err, null)
       done()
     })
   })
