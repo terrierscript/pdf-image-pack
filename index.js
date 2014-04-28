@@ -2,14 +2,14 @@ var sizeOf = require('image-size')
 var fs = require("fs")
 var PDFDocument = require('pdfkit')
 var defaults = require("defaults")
-module.exports = function(images, opts){
+module.exports = function(images, output, opts){
   var opt = defaults(opts, {
-    //layout : "portlait",
     fit    : false,
   })
   var maxWidth = 0
   var maxHeight = 0
 
+  // get sizes
   var imgSizes = images.map(function(img){
     var size = sizeOf(img)
     maxWidth = Math.max(maxWidth, size.width)
@@ -22,16 +22,23 @@ module.exports = function(images, opts){
     opt.size = [maxWidth, maxHeight]
   }
 
-  var output = "./tmp/out.pdf"
-  var doc = new PDFDocument(opt)
+
+  //var doc = new PDFDocument(opt)
+  var doc = new PDFDocument()
+  var stream = output
+  if(typeof output == "string"){
+    stream
+  }
+  doc.text('Hello world!')
+  
+  doc.pipe(fs.createWriteStream(output))
+  doc.end()
+  return
 
   var pageSize = {
     width:  doc.page.width,
     height: doc.page.height
   }
-
-
-  //console.log(pageSize)
 
   images.forEach(function(img, i ){
     if(i > 0){
@@ -42,12 +49,8 @@ module.exports = function(images, opts){
     var offset = calcOffset(pageSize, newSize)
     doc.image(img, offset.x, offset.y, newSize)
   })
-
-  doc.pipe(fs.createWriteStream(output))
   doc.end()
 }
-
-var addImage = function(doc, image){}
 
 // calcurate size
 var calcSize = function(pageSize, imageSize, fit){
