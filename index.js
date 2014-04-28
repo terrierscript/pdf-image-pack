@@ -2,7 +2,7 @@ var sizeOf = require('image-size')
 var fs = require("fs")
 var PDFDocument = require('pdfkit')
 var defaults = require("defaults")
-module.exports = function(images, output, opts){
+module.exports = function(images, output, opts, cb){
   var opt = defaults(opts, {
     fit    : false,
   })
@@ -23,17 +23,18 @@ module.exports = function(images, output, opts){
   }
 
 
-  //var doc = new PDFDocument(opt)
-  var doc = new PDFDocument()
+  var doc = new PDFDocument(opt)
   var stream = output
   if(typeof output == "string"){
-    stream
+    stream = fs.createWriteStream(output)
   }
-  doc.text('Hello world!')
-  
-  doc.pipe(fs.createWriteStream(output))
-  doc.end()
-  return
+  doc.pipe(stream)
+  stream.on('error', function(err){
+    cb(err)
+  })
+  stream.on('finish', function(){
+    cb(null, doc)
+  })
 
   var pageSize = {
     width:  doc.page.width,
