@@ -16,7 +16,7 @@ var ImageSet = function(images){
   this.maxSize = [maxWidth, maxHeight]
 }
 
-module.exports = function(imgs, stream, options, cb){
+module.exports = function(imgs, options, cb){
   var images = new ImageSet(imgs)
 
   // auto scaling
@@ -40,7 +40,7 @@ module.exports = function(imgs, stream, options, cb){
     var offset = calcOffset(pageSize, newSize)
     doc.image(img, offset.x, offset.y, newSize)
   })
-
+/*
   if(typeof stream == "string"){
     stream = fs.createWriteStream(stream)
   }
@@ -54,6 +54,8 @@ module.exports = function(imgs, stream, options, cb){
     cb(null, doc)
   })
   doc.end()
+  */
+  cb(null, doc)
 }
 
 // calcurate size
