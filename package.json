@@ -1,10 +1,10 @@
 {
-  "name": "pdf-pack",
+  "name": "pdf-slide",
   "version": "0.0.0",
   "description": "pack to png from images",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "author": "",
   "license": "ISC",
