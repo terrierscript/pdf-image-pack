@@ -23,3 +23,17 @@ slide.output(imgs, output)
 ## new PDFSlide([optoon])
 - construction
 - options
+  - option for PDFKit
+
+## PDFSlide.createDoc(images)
+- return pdf slide object with pdfkit
+- images
+  - images path array
+
+## PDFSlide.output(images, output)
+- output pdf slide file
+- images {Array}
+  - images path array
+- output {String | Stream}
+  - output destination.
+  - if string, use as output path
