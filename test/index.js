@@ -21,6 +21,7 @@ describe("pack",function(){
     rimraf.sync("./tmp")
     fs.mkdirSync("./tmp")
   })
+  // FIXME: failed on about 1/5
   it("pack", function(done){
     var output = "./tmp/create_doc_test.pdf"
     var slide = new PDFSlide()
