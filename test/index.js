@@ -26,7 +26,6 @@ describe("pack",function(){
       assertFile(output, './fixture/pdf/auto_size.pdf')
       done()
     })
-
-})
+  })
   it("")
 })
