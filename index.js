@@ -3,18 +3,28 @@ var fs = require("fs")
 var PDFDocument = require('pdfkit')
 var dimension = require("./lib/dimension.js")
 
+var Resource = function(image){
+  this.path = image
+  this.size = sizeOf(image)
+}
 var ImageSet = function(images){
+  this.resources = images.map(function(img){
+    var res = new Resource(img)
+    var size = res.size
+    return res
+  })
+}
+
+var calcMaxSize = function(imageSet){
   var maxWidth = 0
   var maxHeight = 0
-  this.paths = images
-  this.sizes = images.map(function(img){
-    var size = sizeOf(img)
+
+  imageSet.resources.forEach(function(res){
+    var size = res.size
     maxWidth = Math.max(maxWidth, size.width)
     maxHeight = Math.max(maxHeight, size.height)
-    return size
   })
-
-  this.maxSize = [maxWidth, maxHeight]
+  return [maxWidth, maxHeight]
 }
 
 var createDoc = function(imgs, options){
@@ -22,7 +32,7 @@ var createDoc = function(imgs, options){
 
   // auto scaling
   if(!options.size){
-    options.size = images.maxSize
+    options.size = calcMaxSize(images)
   }
 
   var doc = new PDFDocument(options)
@@ -32,14 +42,14 @@ var createDoc = function(imgs, options){
     height: doc.page.height
   }
 
-  images.paths.forEach(function(img, i ){
+  images.resources.forEach(function(res, i ){
     if(i > 0){
       doc.addPage()
     }
-    var imgSize = images.sizes[i]
+    var imgSize = res.size
     var newSize = dimension.calcSize(pageSize, imgSize)
     var offset = dimension.calcOffset(pageSize, newSize)
-    doc.image(img, offset.x, offset.y, newSize)
+    doc.image(res.path, offset.x, offset.y, newSize)
   })
   return doc
 }
