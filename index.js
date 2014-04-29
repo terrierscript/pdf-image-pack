@@ -16,7 +16,7 @@ var ImageSet = function(images){
   this.maxSize = [maxWidth, maxHeight]
 }
 
-module.exports = function(imgs, options, cb){
+var createDoc = function(imgs, options){
   var images = new ImageSet(imgs)
 
   // auto scaling
@@ -40,9 +40,25 @@ module.exports = function(imgs, options, cb){
     var offset = calcOffset(pageSize, newSize)
     doc.image(img, offset.x, offset.y, newSize)
   })
-/*
-  if(typeof stream == "string"){
-    stream = fs.createWriteStream(stream)
+  return doc
+}
+
+var PDFSlide = function(options){
+  this.options = options || {}
+}
+
+PDFSlide.prototype.createDoc = function(images){
+  return createDoc(images, this.options)
+}
+
+PDFSlide.prototype.output = function(images, output, cb){
+  var doc = this.createDoc(images)
+
+  var stream = undefined
+  if(typeof output == "string"){
+    stream = fs.createWriteStream(output)
+  }else{
+    stream = output
   }
   doc.pipe(stream)
 
@@ -54,9 +70,9 @@ module.exports = function(imgs, options, cb){
     cb(null, doc)
   })
   doc.end()
-  */
-  cb(null, doc)
 }
+
+module.exports = PDFSlide
 
 // calcurate size
 var calcSize = function(pageSize, imageSize){
