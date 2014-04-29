@@ -50,15 +50,15 @@ var createDoc = function(imgs, options){
   return doc
 }
 
-var PDFSlide = function(options){
+var PDFImagePack = function(options){
   this.options = options || {}
 }
 
-PDFSlide.prototype.createDoc = function(images){
+PDFImagePack.prototype.createDoc = function(images){
   return createDoc(images, this.options)
 }
 
-PDFSlide.prototype.output = function(images, output, cb){
+PDFImagePack.prototype.output = function(images, output, cb){
   var doc = this.createDoc(images)
 
   var stream = undefined
@@ -79,4 +79,4 @@ PDFSlide.prototype.output = function(images, output, cb){
   doc.end()
 }
 
-module.exports = PDFSlide
+module.exports = PDFImagePack

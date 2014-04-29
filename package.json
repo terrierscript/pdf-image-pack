@@ -1,12 +1,13 @@
 {
-  "name": "pdf-slide",
+  "name": "pdf-image-pack",
   "version": "0.0.0",
   "description": "pack to png from images",
   "main": "index.js",
   "scripts": {
     "test": "mocha"
   },
-  "author": "",
+  "author": "suisho",
+  "repository" : "git@github.com:suisho/pdf-image-pack.git"
   "license": "ISC",
   "dependencies": {
     "defaults": "^1.0.0",

@@ -1,4 +1,4 @@
-var PDFSlide = require("../index")
+var PDFImagePack = require("../index")
 var assert = require("assert")
 var fs = require("fs")
 var rimraf = require("rimraf")
@@ -30,7 +30,7 @@ describe("pack",function(){
   })
   it("pack", function(done){
     var output = "./tmp/create_doc_test.pdf"
-    var slide = new PDFSlide()
+    var slide = new PDFImagePack()
     var doc = slide.createDoc(imgs)
     var stream = fs.createWriteStream(output)
     doc.pipe(stream)
@@ -49,7 +49,7 @@ describe("pack",function(){
     })
   })
   it("output", function(done){
-    var slide = new PDFSlide()
+    var slide = new PDFImagePack()
     var output = "./tmp/output_test.pdf"
     var doc = slide.output(imgs, output, function(){
       var data = fs.readFileSync(output)
