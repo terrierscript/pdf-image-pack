@@ -13,7 +13,9 @@ var imgs = [
 ]
 var output = "./tmp/out.pdf"
 var slide = new PDFSlide()
-slide.output(imgs, output)
+slide.output(imgs, output, function(err, doc){
+  console.log("finish output")
+})
 
 ```
 
@@ -30,10 +32,11 @@ slide.output(imgs, output)
 - images
   - images path array
 
-## PDFSlide.output(images, output)
+## PDFSlide.output(images, output, callback)
 - output pdf slide file
 - images {Array}
   - images path array
 - output {String | Stream}
   - output destination.
   - if string, use as output path
+- callback {Function}
