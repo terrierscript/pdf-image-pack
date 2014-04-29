@@ -1,6 +1,8 @@
 var PDFSlide = require("../index")
 var assert = require("assert")
 var fs = require("fs")
+var rimraf = require("rimraf")
+
 
 var assertFile = function(actualFile, expectFile){
   var actualData = fs.readFileSync(actualFile)
@@ -8,7 +10,12 @@ var assertFile = function(actualFile, expectFile){
   assert.deepEqual(actualData, expectData)
 }
 
+
 describe("pack",function(){
+  before(function(){
+    rimraf.sync("./tmp")
+    fs.mkdirSync("./tmp")
+  })
   it("pack", function(done){
     var imgs = [
       "./fixture/basic/a.png",
