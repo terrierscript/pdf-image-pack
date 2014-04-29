@@ -2,11 +2,18 @@ var PDFSlide = require("../index")
 var assert = require("assert")
 var fs = require("fs")
 var rimraf = require("rimraf")
+var crypto = require('crypto');
 
+var digest = function(data){
+  var shasum = crypto.createHash('sha1');
+  shasum.update(data)
+  return shasum.digest('hex')
+}
 
 var assertFile = function(actualFile, expectFile){
   var actualData = fs.readFileSync(actualFile)
   var expectData = fs.readFileSync(expectFile)
+  assert.deepEqual(digest(actualData), digest(expectData))
   assert.deepEqual(actualData, expectData)
 }
 
