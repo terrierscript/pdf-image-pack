@@ -7,7 +7,7 @@
     "test": "mocha"
   },
   "author": "suisho",
-  "repository" : "git@github.com:suisho/pdf-image-pack.git",
+  "repository": "git@github.com:suisho/pdf-image-pack.git",
   "license": "ISC",
   "dependencies": {
     "defaults": "^1.0.0",
@@ -16,6 +16,7 @@
   },
   "devDependencies": {
     "mocha": "^1.18.2",
-    "rimraf": "^2.2.6"
+    "rimraf": "^2.2.6",
+    "traverse": "^0.6.6"
   }
 }

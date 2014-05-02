@@ -2,7 +2,28 @@ var PDFImagePack = require("../index")
 var assert = require("assert")
 var fs = require("fs")
 var rimraf = require("rimraf")
-var crypto = require('crypto');
+var crypto = require('crypto')
+var traverse = require('traverse')
+
+var scrumb = function(obj){
+  obj = traverse(obj).map(function (x) {
+    if (this.circular) this.remove()
+  })
+  return JSON.parse( JSON.stringify(obj) )
+}
+
+var removeBuffer = function(obj){
+  return traverse(obj).map(function (x) {
+    switch(this.key){
+      case "buffer":
+      case "_buffer":
+        this.remove()
+    }
+  })
+}
+var clean = function(obj){
+  return removeBuffer(scrumb(obj))
+}
 
 var digest = function(data){
   var shasum = crypto.createHash('sha1');
@@ -28,22 +49,15 @@ describe("pack",function(){
     rimraf.sync("./tmp")
     fs.mkdirSync("./tmp")
   })
-  it("pack", function(done){
+  it("pack", function(){
     var output = "./tmp/create_doc_test.pdf"
     var slide = new PDFImagePack()
     var doc = slide.createDoc(imgs)
-    var stream = fs.createWriteStream(output)
-    doc.pipe(stream)
     doc.info.CreationDate = new Date(2014, 1, 26, 0, 0, 0)
-    doc.end()
-    stream.on('finish', function(err){
-      var data = fs.readFileSync(output)
-      assert.equal(err, null)
-      assert.equal(data.length, 8492)
-      // FIXME: file is changed unknown condition...
-      //assertFile(output, './fixture/pdf/auto_size.pdf')
-      done()
-    })
+    //console.log(JSON.stringify(obj, null, " ") )
+
+    var fixture = require('../fixture/json/doc.json');
+    assert.deepEqual(clean(doc), fixture)
   })
   it("output", function(done){
     var slide = new PDFImagePack()
