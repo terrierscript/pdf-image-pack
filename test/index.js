@@ -4,6 +4,7 @@ var fs = require("fs")
 var rimraf = require("rimraf")
 var crypto = require('crypto')
 var traverse = require('traverse')
+var deep = require('deep-diff')
 
 var scrumb = function(obj){
   obj = traverse(obj).map(function (x) {
@@ -57,7 +58,9 @@ describe("pack",function(){
     //console.log(JSON.stringify(obj, null, " ") )
 
     var fixture = require('../fixture/json/doc.json');
-    assert.deepEqual(clean(doc), fixture)
+    var cleaned = clean(doc)
+    console.log(deep(cleaned, fixture))
+    assert.deepEqual(cleaned, fixture)
   })
   it("output", function(done){
     var slide = new PDFImagePack()

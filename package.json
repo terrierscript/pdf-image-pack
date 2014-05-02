@@ -15,6 +15,8 @@
     "pdfkit": "^0.6.1"
   },
   "devDependencies": {
+    "chai": "^1.9.1",
+    "deep-diff": "^0.1.7",
     "mocha": "^1.18.2",
     "rimraf": "^2.2.6",
     "traverse": "^0.6.6"
