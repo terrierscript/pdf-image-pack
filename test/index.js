@@ -6,24 +6,24 @@ var crypto = require('crypto')
 var traverse = require('traverse')
 var deep = require('deep-diff')
 
-var scrumb = function(obj){
-  obj = traverse(obj).map(function (x) {
-    if (this.circular) this.remove()
+var PFParser = require('pdf2json')
+var parsePDF = function(file, cb){
+  var pdfParser = new PFParser()
+  pdfParser.on("pdfParser_dataReady", function(x){
+    cb(null, x.data)
   })
-  return JSON.parse( JSON.stringify(obj) )
+  pdfParser.on("pdfParser_dataError", function(err){
+    cb(err)
+  })
+  pdfParser.loadPDF(file);
 }
 
-var removeBuffer = function(obj){
-  return traverse(obj).map(function (x) {
-    switch(this.key){
-      case "buffer":
-      case "_buffer":
-        this.remove()
-    }
+var parsed = function(actual, expect, cb){
+  parsePDF(actual, function(err, actualJson){
+    parsePDF(expect, function(err, expectJson){
+      cb(err, actualJson, expectJson)
+    })
   })
-}
-var clean = function(obj){
-  return removeBuffer(scrumb(obj))
 }
 
 var digest = function(data){
@@ -50,25 +50,16 @@ describe("pack",function(){
     rimraf.sync("./tmp")
     fs.mkdirSync("./tmp")
   })
-  it("pack", function(){
-    var output = "./tmp/create_doc_test.pdf"
-    var slide = new PDFImagePack()
-    var doc = slide.createDoc(imgs)
-    doc.info.CreationDate = new Date(2014, 1, 26, 0, 0, 0)
-    //console.log(JSON.stringify(obj, null, " ") )
-
-    var fixture = require('../fixture/json/doc.json');
-    var cleaned = clean(doc)
-    console.log(deep(cleaned, fixture))
-    assert.deepEqual(cleaned, fixture)
-  })
   it("output", function(done){
     var slide = new PDFImagePack()
     var output = "./tmp/output_test.pdf"
     var doc = slide.output(imgs, output, function(){
       var data = fs.readFileSync(output)
       assert.equal(data.length, 8492)
-      done()
+      parsed(output, "./fixture/pdf/auto_size.pdf", function(err, actualJson, expectJson){
+        assert.deepEqual(actualJson, expectJson)
+        done()
+      })
     })
 
   })

@@ -18,7 +18,9 @@
     "chai": "^1.9.1",
     "deep-diff": "^0.1.7",
     "mocha": "^1.18.2",
+    "pdf2json": "^0.6.7",
     "rimraf": "^2.2.6",
-    "traverse": "^0.6.6"
+    "traverse": "^0.6.6",
+    "underscore": "^1.6.0"
   }
 }
