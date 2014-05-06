@@ -42,8 +42,8 @@ var assertFile = function(actualFile, expectFile){
 
 describe("pack",function(){
   var imgs = [
-    "./fixture/basic/a.png",
-    "./fixture/basic/b.png",
+    "./fixture/basic/a.png", // 200 * 100
+    "./fixture/basic/b.png", // 100 * 200
   ]
 
   before(function(){
