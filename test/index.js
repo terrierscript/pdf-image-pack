@@ -61,6 +61,19 @@ describe("pack",function(){
         done()
       })
     })
-
+  })
+  it("with b5 option", function(done){
+    var slide = new PDFImagePack({
+      size : "b5"
+    })
+    var output = "./tmp/output_test_b5.pdf"
+    var doc = slide.output(imgs, output, function(){
+      var data = fs.readFileSync(output)
+      assert.equal(data.length, 8533)
+      parsed(output, "./fixture/pdf/b5.pdf", function(err, actualJson, expectJson){
+        assert.deepEqual(actualJson, expectJson)
+        done()
+      })
+    })
   })
 })
