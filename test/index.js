@@ -3,7 +3,6 @@ var assert = require("assert")
 var fs = require("fs")
 var rimraf = require("rimraf")
 var crypto = require('crypto')
-var traverse = require('traverse')
 var deep = require('deep-diff')
 
 var PFParser = require('pdf2json')
